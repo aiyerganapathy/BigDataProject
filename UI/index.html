@@ -102,8 +102,9 @@
             $(document).ready(function(){
                 var data_weather=[];
                 var coordinates=[];  
+                //calling gender analsis function to analyse the trips taken by each gender in a citibike and also the average duration
                 gender_analysis();
-               
+               //Initialising datepickers and sliders
                     $( "#date_start" ).datepicker({
                          minDate: new Date(2015, 0, 1),
                          maxDate: new Date(2015, 11 , 31)
@@ -176,27 +177,17 @@
     $( "#range_visibility" ).val( $( "#slider_visibility" ).slider( "values", 0 ) +
       " - " + $( "#slider_visibility" ).slider( "values", 1 ) );
                 
-                $("#revenue").click(function(){
-                   
-                    $( "#revenueanalysis" ).empty();
-                    var Date_from = $( "#date_start_revenue" ).datepicker( "getDate" );
-                    var Date_to = $( "#date_end_revenue" ).datepicker( "getDate" );
-                     render_revenue(Date_from,Date_to);
-                });
-                $("#findpeakstation").click(function(){
-                   
-                    $( "#peakstation" ).empty();
-                    var Date_from = $( "#date_start_station" ).datepicker( "getDate" );
-                    var Date_to = $( "#date_end_station" ).datepicker( "getDate" );
-                     render_max_usage_station(Date_from,Date_to);
-                });
+                
+                
                 $("#findpeak").click(function(){
                    
                     $( "#peakusage" ).empty();
                     $( "#peakusagetaxi" ).empty();
                     var Date_from = $( "#date_start_peak" ).datepicker( "getDate" );
                     var Date_to = $( "#date_end_peak" ).datepicker( "getDate" );
-                     render_max_usage_hour(Date_from,Date_to);
+                    //calling function to plot graph to determine peak hour usage of citibike 
+                    render_max_usage_hour(Date_from,Date_to);
+                    //calling function to plot graph to determine peak hour usage of taxi
                     render_max_usage_hour_taxi(Date_from,Date_to);
                 });
                 $("#analysenow").click(function(){
@@ -215,9 +206,9 @@
                         send_data['to_wind']=(get_val_wind[1]);
                         send_data['from_visibility']=(get_val_visibility[0]);
                         send_data['to_visibility']=(get_val_visibility[1]);
-                        //send_data['type']=$('#parameters_weather :selected').val();
-                    console.log(send_data);
+                    //calling function to plot graph to determine effect of weather on taxi usage
                     render_taxi_chart(Date_from,Date_to,send_data);
+                    //calling function to plot graph to determine effect of weather on citibike usage
                     render_citibike_chart(Date_from,Date_to,send_data);
                 });
                 
