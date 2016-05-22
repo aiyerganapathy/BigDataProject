@@ -1,7 +1,9 @@
 function render_citibike_chart(Date_from,Date_to,weather_param){
-    //console.log(data1);
+//Getting difference in time between from and to date
 var timeDiff = Math.abs(Date_to.getTime() - Date_from.getTime());
+//Converting Time difference to day difference
 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+//Defining number of ticks to be displayed in x axis
 var ticks=0
     if(diffDays<6){
         ticks=diffDays;
@@ -9,6 +11,7 @@ var ticks=0
     else{
         ticks=12;
     }
+//Defining margins and size of svg
 var margin = {top: 30, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
     height = 270 - margin.top - margin.bottom;
@@ -39,30 +42,31 @@ var svg = d3.select("#charts").append("svg").attr("class","col-xs-6")
     .append("g")
         .attr("transform", 
               "translate(" + margin.left + "," + margin.top + ")");
-
+//Read data
 d3.csv("data/weather_freq_city.csv", function(error, data1) {
  console.log("Here");
     console.log(weather_param);
     data1.forEach(function(d) {
-        //console.log(d.date);
         d.date =parseDate(d.date);
         d.usage = +d.usage;
     });
+//Adding filter to data based on weather parameters and restrictions of date
 var data=data1.filter(function(d){
-       //console.log(d.date);
-        //console.log(Date_from);
+       
       if ((d.date<=Date_to) && (d.date>=Date_from) && d.wind>=weather_param["from_wind"] && d.wind<=weather_param["to_wind"] && d.temp>=weather_param["from_temp"] && d.temp<=weather_param["to_temp"] && d.visibility>=weather_param["from_visibility"] && d.visibility<=weather_param["to_visibility"]) { return true; }
     
     return false; 
   });
+    //Defining d3-tip to show the weather parameters
     var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
     return "<b>Date :"+d["date"]+"</b><br/>"+"Temperature : "+(d.temp)+"</b><br/>"+"Wind : "+(d.wind)+"</b><br/>"+"Visibility : "+(d.visibility)+"<br/>"+"No of trips : "+d.usage;
   });
+    //Call the tip so that it can show on hover
     svg.call(tip);
-    // Scale the range of the data
+    // Define domain.
     x.domain(d3.extent(data, function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.usage; })]);
 

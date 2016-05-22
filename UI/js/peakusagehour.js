@@ -1,7 +1,9 @@
 function render_max_usage_hour(Date_from,Date_to){
+//Getting difference in time between from and to date
 var timeDiff = Math.abs(Date_to.getTime() - Date_from.getTime());
+//Converting Time difference to day difference
 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-    //console.log(diffDays);
+//Defining number of ticks to be displayed in x axis
     var ticks=0
     if(diffDays<6){
         ticks=diffDays;
@@ -9,6 +11,7 @@ var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
     else{
         ticks=12;
     }
+    //Defining margins and size of svg
     var margin = {top: 30, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
     height = 270 - margin.top - margin.bottom;
@@ -26,10 +29,7 @@ var xAxis = d3.svg.axis().scale(x)
 
 var yAxis = d3.svg.axis().scale(y)
     .orient("left").ticks(5);
-
-// Define the line
-
-    
+ 
 // Adds the svg canvas
 var svg = d3.select("#peakusage")
     .append("svg")
@@ -42,19 +42,18 @@ var svg = d3.select("#peakusage")
 // Get the data
 d3.csv("data/final_result_citi_peak.csv", function(error, data1) {
     data1.forEach(function(d) {
-        console.log(d.date);
+        
         d.date = parseDate(d.date);
         d.hour = +d.hour;
         d.count=+d.count;
     });
+    //Add filter based on from and to dates
     var data=data1.filter(function(d){
-       //console.log(d.date);
-        //console.log(Date_from);
       if ((d.date<=Date_to) && (d.date>=Date_from)) { return true; }
     
     return false; 
   });
-
+    //Add d3 tip
     var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
@@ -63,12 +62,9 @@ d3.csv("data/final_result_citi_peak.csv", function(error, data1) {
   });
     svg.call(tip);
 
-    // Scale the range of the data
+    // Define domain
     x.domain(d3.extent(data, function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.hour; })]);
-
-    // Add the valueline path.
-   
 
     // Add the scatterplot
     svg.selectAll("dot")
